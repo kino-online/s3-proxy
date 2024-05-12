@@ -1,21 +1,30 @@
 package art.aelaort.s3proxy;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
+@RequiredArgsConstructor
 public class Controller {
 	@Value("${s3.url}")
 	private String s3Url;
+	private final RestTemplate http;
 
-	@GetMapping("/{s3-file-path}")
-	public void getFile(HttpServletResponse response, @PathVariable("s3-file-path") String s3FilePath) {
+	@GetMapping
+	public void redirectToS3(HttpServletResponse response, @RequestParam("s3") String s3FilePath) {
 		String finalPath = s3Url + s3FilePath;
 		response.setHeader("Location", finalPath);
 		response.setHeader("x-minio-extract", "true");
-		response.setStatus(302);
+		response.setStatus(301);
+	}
+
+	@GetMapping("download")
+	public byte[] downloadFromS3(@RequestParam("s3") String s3FilePath) {
+		return http.getForObject(s3FilePath, byte[].class);
 	}
 }
