@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ public class Controller {
 		response.setStatus(301);
 	}
 
+	@CrossOrigin
 	@GetMapping(value = "download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public byte[] downloadFromS3(@RequestParam("s3") String s3FilePath) {
 		return http.getForObject("/" + s3FilePath, byte[].class);
