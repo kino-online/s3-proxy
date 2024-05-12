@@ -1,33 +1,24 @@
 package art.aelaort.s3proxy;
 
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
 public class Controller {
-	@Value("${s3.url}")
-	private String s3Url;
 	private final RestTemplate http;
 
-	@GetMapping
-	public void redirectToS3(HttpServletResponse response, @RequestParam("s3") String s3FilePath) {
-		String finalPath = s3Url + s3FilePath;
-		response.setHeader("Location", finalPath);
-		response.setHeader("x-minio-extract", "true");
-		response.setStatus(301);
-	}
-
 	@CrossOrigin
-	@GetMapping(value = "download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public byte[] downloadFromS3(@RequestParam("s3") String s3FilePath) {
-		return http.getForObject("/" + s3FilePath, byte[].class);
+	@GetMapping(value = "/**", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public byte[] downloadFromS3(HttpServletRequest request) {
+		String s3Path = URI.create(request.getRequestURI()).getPath();
+		return http.getForObject(s3Path, byte[].class);
 	}
 }
