@@ -29,7 +29,7 @@ public class Controller {
 	public void redirect(HttpServletResponse response) {
 		log.debug("redirect to {}", urlForRedirect);
 		response.setHeader("location", urlForRedirect.get());
-		response.setStatus(301);
+		response.setStatus(303);
 	}
 
 	@CrossOrigin
