@@ -1,9 +1,11 @@
 package art.aelaort.s3proxy;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -15,8 +17,15 @@ import java.util.concurrent.atomic.AtomicReference;
 @RestController
 @RequiredArgsConstructor
 public class Controller {
+	@Value("${redirect.default.url}")
+	private String url;
 	private final RestTemplate http;
-	private final AtomicReference<String> urlForRedirect = new AtomicReference<>();
+	private AtomicReference<String> urlForRedirect;
+
+	@PostConstruct
+	private void init() {
+		urlForRedirect = new AtomicReference<>(url);
+	}
 
 	@PostMapping("set-redirect")
 	public void setUrlForRedirect(@RequestParam String url) {
