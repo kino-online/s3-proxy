@@ -27,6 +27,11 @@ public class Controller {
 		urlForRedirect = new AtomicReference<>(url);
 	}
 
+	@GetMapping("ifconfig")
+	public String ddns(HttpServletRequest request) {
+		return request.getHeader("X-FORWARDED-FOR");
+	}
+
 	@PostMapping("set-redirect")
 	public void setUrlForRedirect(@RequestParam String url) {
 		urlForRedirect.set(url);
