@@ -1,9 +1,6 @@
 package art.aelaort.s3proxy;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +18,7 @@ public class ListController {
 		}
 	}
 
+	@CrossOrigin("${cors.origin}")
 	@GetMapping("/list")
 	public Set<NamedURL> list() {
 		return urls;
