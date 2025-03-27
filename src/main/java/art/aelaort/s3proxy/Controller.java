@@ -29,7 +29,9 @@ public class Controller {
 
 	@GetMapping("ifconfig")
 	public String ddns(HttpServletRequest request) {
-		return request.getHeader("X-FORWARDED-FOR");
+		String header = request.getHeader("X-FORWARDED-FOR");
+		log.info("request ifconfig, ip: {}", header);
+		return header;
 	}
 
 	@PostMapping("set-redirect")
